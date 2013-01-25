@@ -28,39 +28,4 @@ public abstract class PortalStore {
 
     public abstract Map<String, Portal> getPortals();
 
-    // Test if a point is inside a portal
-    protected boolean isInside(int x, int y, int z, String worldname, Portal portal) {
-        if (!portal.worldname.equals(worldname)) {
-            return false;
-        }
-
-        int upperX, lowerX;
-        int upperY, lowerY;
-        int upperZ, lowerZ;
-
-        PortalRegion area = portal.getInterior();
-
-        lowerX = area.leftCorner.getBlockX();
-        upperX = area.rightCorner.getBlockX();
-
-        lowerY = area.leftCorner.getBlockY();
-        upperY = area.rightCorner.getBlockY();
-
-        lowerZ = area.leftCorner.getBlockZ();
-        upperZ = area.rightCorner.getBlockZ();
-
-        if (!(x >= lowerX && x <= upperX)) {
-            return false;
-        }
-
-        if (!(y >= lowerY && y <= upperY)) {
-            return false;
-        }
-
-        if (!(z >= lowerZ && z <= upperZ)) {
-            return false;
-        }
-
-        return true;
-    }
 }

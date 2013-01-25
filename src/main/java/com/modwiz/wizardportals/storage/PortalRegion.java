@@ -12,16 +12,50 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class PortalRegion implements Serializable {
-    public Location leftCorner;
-    public Location rightCorner;
+    public SerializableLocation leftCorner;
+    public SerializableLocation rightCorner;
 
     public PortalRegion() {
 
     }
 
     public PortalRegion(Location leftCorner, Location rightCorner) {
-        this.leftCorner =leftCorner;
-        this.rightCorner =rightCorner;
+        this.leftCorner = new SerializableLocation(leftCorner);
+        this.rightCorner = new SerializableLocation(rightCorner);
+    }
+
+    public boolean isInside(int x, int y, int z, String worldname) {
+        if (!worldname.equals(worldname)) {
+            return false;
+        }
+
+        int upperX, lowerX;
+        int upperY, lowerY;
+        int upperZ, lowerZ;
+
+
+        lowerX = leftCorner.getBlockX();
+        upperX = rightCorner.getBlockX();
+
+        lowerY = leftCorner.getBlockY();
+        upperY = rightCorner.getBlockY();
+
+        lowerZ = leftCorner.getBlockZ();
+        upperZ = rightCorner.getBlockZ();
+
+        if (!(x >= lowerX && x <= upperX)) {
+            return false;
+        }
+
+        if (!(y >= lowerY && y <= upperY)) {
+            return false;
+        }
+
+        if (!(z >= lowerZ && z <= upperZ)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

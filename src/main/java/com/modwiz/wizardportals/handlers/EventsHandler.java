@@ -39,7 +39,7 @@ public class EventsHandler implements Listener {
         }
 
         Portal possiblePortal = plugin.getPortalManager().getPortal(event.getPlayer());
-        System.out.println(possiblePortal == null ? "It was null" : possiblePortal);
+
         if (possiblePortal != null) {
             event.getPlayer().teleport(possiblePortal.getDestination().toLocation());
         }
@@ -51,9 +51,13 @@ public class EventsHandler implements Listener {
         Session playerSession = plugin.getSessionManager().getSession(player);
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            playerSession.setLeftClick(event.getClickedBlock().getLocation());
+            if(playerSession.setLeftClick(event.getClickedBlock().getLocation())) {
+                event.setCancelled(true);
+            }
         }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            playerSession.setRightClick(event.getClickedBlock().getLocation());
+            if (playerSession.setRightClick(event.getClickedBlock().getLocation())) {
+                event.setCancelled(true);
+            }
         }
     }
 }

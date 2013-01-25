@@ -29,7 +29,7 @@ public class WizardPortals extends JavaPlugin {
             getDataFolder().mkdir();
         }
 
-        portalManager = PortalManager.createMemoryStore(this);
+        portalManager = PortalManager.createDiskStore(this);
         sessionManager = new SessionManager(this);
         eventHandling = new EventsHandler(this);
 

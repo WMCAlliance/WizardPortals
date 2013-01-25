@@ -34,7 +34,9 @@ public class MemoryPortalStore extends PortalStore implements Serializable {
                 continue;
             }
 
-            if (isInside(x, y, z, world, portal)) {
+            PortalRegion portalArea = portal.getInterior();
+
+            if (portalArea.isInside(x, y, z, world)) {
                 return portal;
             }
         }

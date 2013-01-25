@@ -28,7 +28,7 @@ public class Portal implements Serializable {
     public Portal(PortalDestination destination, PortalRegion interior, String portalName) {
         this.destination = destination;
         this.portalInterior = interior;
-        this.worldname = interior.leftCorner.getWorld().getName();
+        this.worldname = interior.leftCorner.getWorldName();
         this.name = portalName;
     }
     public PortalRegion getInterior() {
