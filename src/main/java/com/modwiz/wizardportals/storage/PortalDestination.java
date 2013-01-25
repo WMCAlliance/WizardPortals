@@ -15,9 +15,9 @@ import java.io.Serializable;
  */
 public class PortalDestination implements Serializable {
     String world;
-    int x;
-    int y;
-    int z;
+    double x;
+    double y;
+    double z;
     float pitch;
     float yaw;
 
@@ -34,9 +34,9 @@ public class PortalDestination implements Serializable {
     }
 
     public PortalDestination(Location location) {
-        x = location.getBlockX();
-        y = location.getBlockY();
-        z = location.getBlockZ();
+        x = location.getX();
+        y = location.getY();
+        z = location.getZ();
 
         pitch = location.getPitch();
         yaw = location.getYaw();
