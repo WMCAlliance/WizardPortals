@@ -1,5 +1,11 @@
 package com.modwiz.wizardportals.storage;
 
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sjohnson
@@ -7,44 +13,30 @@ package com.modwiz.wizardportals.storage;
  * Time: 10:36 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Portal {
+public class Portal implements Serializable {
     // Name of the portal
     public String name;
-
-    // Bottom left corner
-    public int x1;
-    public int y1;
-    public int z1;
-
-    //Top right corner
-    public int x2;
-    public int y2;
-    public int z2;
 
     // World name
     public String worldname;
 
+    public PortalRegion portalInterior;
+
     // Destination
-    public int destX;
-    public int destY;
-    public int destZ;
+    private PortalDestination destination;
 
-    public float destPitch;
-    public float destYaw;
-
-    public String destWorld;
+    public Portal(PortalDestination destination, PortalRegion interior, String portalName) {
+        this.destination = destination;
+        this.portalInterior = interior;
+        this.worldname = interior.leftCorner.getWorld().getName();
+        this.name = portalName;
+    }
+    public PortalRegion getInterior() {
+        return portalInterior;
+    }
 
     public PortalDestination getDestination() {
-        PortalDestination destination = new PortalDestination();
-
-        destination.world = destWorld;
-        destination.x = destX;
-        destination.y = destY;
-        destination.z = destZ;
-
-        destination.pitch = destPitch;
-        destination.yaw = destYaw;
-
         return destination;
     }
+
 }

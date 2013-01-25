@@ -2,6 +2,8 @@ package com.modwiz.wizardportals.storage;
 
 import org.bukkit.Location;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sjohnson
@@ -9,17 +11,17 @@ import org.bukkit.Location;
  * Time: 7:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CornerBlocks {
+public class PortalRegion implements Serializable {
     public Location leftCorner;
     public Location rightCorner;
 
-    public CornerBlocks() {
+    public PortalRegion() {
 
     }
 
-    public CornerBlocks(Location leftCorner, Location rightCorner) {
-        this.leftCorner = leftCorner;
-        this.rightCorner = rightCorner;
+    public PortalRegion(Location leftCorner, Location rightCorner) {
+        this.leftCorner =leftCorner;
+        this.rightCorner =rightCorner;
     }
 
     @Override

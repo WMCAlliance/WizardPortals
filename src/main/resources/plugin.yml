@@ -1,7 +1,7 @@
 name: WizardPortals
 main: com.modwiz.wizardportals.WizardPortals
-version: 0.0.2
+version: 0.2.0
 commands:
     wp:
-        usage: /wp <create <name>|delete <name>>
+        usage: See "/wp help" for help.
         description: WizardPortals command set

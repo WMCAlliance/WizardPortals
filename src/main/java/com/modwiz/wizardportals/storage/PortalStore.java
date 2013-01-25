@@ -22,7 +22,7 @@ public abstract class PortalStore {
     public abstract Portal getPortal(Location location);
 
     // Adds a new portal only using location objects
-    public abstract void addPortal(PortalDestination destination, Location leftCorner, Location rightCorner, String portalName);
+    public abstract void addPortal(PortalDestination destination, PortalRegion region, String portalName);
 
     public abstract void deletePortal(String portalName);
 
@@ -34,15 +34,30 @@ public abstract class PortalStore {
             return false;
         }
 
-        if (!(x >= portal.x1 && x <= portal.x2)) {
+        int upperX, lowerX;
+        int upperY, lowerY;
+        int upperZ, lowerZ;
+
+        PortalRegion area = portal.getInterior();
+
+        lowerX = area.leftCorner.getBlockX();
+        upperX = area.rightCorner.getBlockX();
+
+        lowerY = area.leftCorner.getBlockY();
+        upperY = area.rightCorner.getBlockY();
+
+        lowerZ = area.leftCorner.getBlockZ();
+        upperZ = area.rightCorner.getBlockZ();
+
+        if (!(x >= lowerX && x <= upperX)) {
             return false;
         }
 
-        if (!(y >= portal.y1 && y <= portal.y2)) {
+        if (!(y >= lowerY && y <= upperY)) {
             return false;
         }
 
-        if (!(z >= portal.z1 && z <= portal.z2)) {
+        if (!(z >= lowerZ && z <= upperZ)) {
             return false;
         }
 

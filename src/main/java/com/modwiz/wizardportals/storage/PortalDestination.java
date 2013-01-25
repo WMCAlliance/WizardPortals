@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sjohnson
@@ -11,7 +13,7 @@ import org.bukkit.World;
  * Time: 8:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PortalDestination {
+public class PortalDestination implements Serializable {
     String world;
     int x;
     int y;

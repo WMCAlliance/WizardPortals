@@ -6,7 +6,7 @@
 
     <groupId>com.modwiz</groupId>
     <artifactId>WizardPortals</artifactId>
-    <version>dev0.0.2</version>
+    <version>dev0.2.0</version>
 
     <repositories>
         <repository>

@@ -2,6 +2,7 @@ package com.modwiz.wizardportals.storage;
 
 import org.bukkit.Location;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * This class does not save portals to the disk besides paging by the os, therefore its not safe to use in a
  * production server
  */
-public class MemoryPortalStore extends PortalStore{
+public class MemoryPortalStore extends PortalStore implements Serializable {
     private Map<String, Portal> storedPortals;
 
     public MemoryPortalStore() {
@@ -52,29 +53,10 @@ public class MemoryPortalStore extends PortalStore{
     }
 
     @Override
-    public void addPortal(PortalDestination destination, Location leftCorner, Location rightCorner, String portalName) {
-        Portal portal = new Portal();
+    public void addPortal(PortalDestination destination, PortalRegion region, String portalName) {
+        Portal portal;
 
-        portal.destWorld = destination.world;
-
-        portal.destX = destination.x;
-        portal.destY = destination.y;
-        portal.destZ = destination.z;
-
-        portal.destPitch = destination.pitch;
-        portal.destYaw = destination.yaw;
-
-        portal.x1 = leftCorner.getBlockX();
-        portal.y1 = leftCorner.getBlockY();
-        portal.z1 = leftCorner.getBlockZ();
-
-        portal.x2 = rightCorner.getBlockX();
-        portal.y2 = rightCorner.getBlockY();
-        portal.z2 = rightCorner.getBlockY();
-
-        portal.worldname = leftCorner.getWorld().getName();
-
-        portal.name = portalName;
+        portal = new Portal(destination, region, portalName);
 
         storedPortals.put(portalName, portal);
     }
