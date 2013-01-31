@@ -1,6 +1,7 @@
 package com.modwiz.wizardportals.player;
 
 import com.modwiz.wizardportals.WizardPortals;
+import com.modwiz.wizardportals.storage.PortalDestination;
 import com.modwiz.wizardportals.storage.PortalRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,11 +20,13 @@ public class Session {
     private WizardPortals plugin;
 
     private boolean isSelecting = false;
+    private boolean isSelectingDestination = false;
     private String playerName = null;
     private boolean isStale = false;
     private Location loc = null;
     private Location leftClick = null;
     private Location rightClick = null;
+    private String portalName = null;
 
     public Session(WizardPortals plugin, Player player) {
         this.plugin = plugin;
@@ -79,24 +82,29 @@ public class Session {
     }
 
     public PortalRegion getSelectionRegion() {
+        if (isSelecting == false && isSelectingDestination == false) {
+            this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You are not currently selecting a portal region.");
+            return null;
+        }
+
         if (leftClick == null) {
-            this.getPlayerFromName().sendMessage("You need to LEFT click on a block.");
+            this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You need to LEFT click on a block.");
             return null;
         }
 
         if (rightClick == null) {
-            this.getPlayerFromName().sendMessage("You need to RIGHT click on a block.");
+            this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You need to RIGHT click on a block.");
             return null;
         }
 
         if (!this.leftClick.getWorld().equals(this.rightClick.getWorld())) {
-            this.getPlayerFromName().sendMessage("You need to select both points in the same world.");
+            this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You need to select both points in the same world.");
             return null;
         }
 
-        this.setSelecting(false);
+        PortalRegion region = new PortalRegion(leftClick, rightClick);
 
-        return new PortalRegion(leftClick, rightClick);
+        return region;
     }
 
     public void setSelecting(boolean selecting) {
@@ -105,5 +113,21 @@ public class Session {
 
     public World getWorldFromName(String worldName) {
         return this.plugin.getServer().getWorld(worldName);
+    }
+
+    public void setSelectingDestination(boolean selecting) {
+        isSelectingDestination = selecting;
+    }
+
+    public boolean isSelectingDestination() {
+        return isSelectingDestination;
+    }
+
+    public String getPortalName() {
+        return portalName;
+    }
+
+    public void setPortalName(String portalName) {
+        this.portalName = portalName;
     }
 }

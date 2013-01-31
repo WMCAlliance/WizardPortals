@@ -3,6 +3,7 @@ package com.modwiz.wizardportals.storage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 
 import java.io.Serializable;
 
@@ -20,9 +21,14 @@ public class PortalDestination implements Serializable {
     double z;
     float pitch;
     float yaw;
+    boolean isWorldDest = false;
 
-    public Location toLocation() {
-        World worldObject = Bukkit.getWorld(world);
+    public Location toLocation(Plugin plugin) {
+        if (isWorldDest) {
+            Location worldSpawn = plugin.getServer().getWorld(world).getSpawnLocation();
+            return worldSpawn;
+        }
+        World worldObject = plugin.getServer().getWorld(world);
 
         Location equivLocation = new Location(worldObject, x, y, z, yaw, pitch);
 
@@ -42,5 +48,20 @@ public class PortalDestination implements Serializable {
         yaw = location.getYaw();
 
         world = location.getWorld().getName();
+        isWorldDest = false;
     }
+
+    public PortalDestination(World world) {
+        this.world = world.getName();
+
+        isWorldDest = true;
+    }
+
+    public PortalDestination(String worldName) {
+        this.world = worldName;
+        isWorldDest = true;
+    }
+
+
+
 }

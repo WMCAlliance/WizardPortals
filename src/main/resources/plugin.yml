@@ -1,6 +1,6 @@
 name: WizardPortals
 main: com.modwiz.wizardportals.WizardPortals
-version: 0.2.0
+version: 0.9.3
 commands:
     wp:
         usage: See "/wp help" for help.

@@ -35,13 +35,13 @@ public class EventsHandler implements Listener {
         playerSession.setStaleLocation(event.getPlayer().getLocation());
 
         if (playerSession.isStale()) {
-            return;
+            //return;
         }
 
         Portal possiblePortal = plugin.getPortalManager().getPortal(event.getPlayer());
 
         if (possiblePortal != null) {
-            event.getPlayer().teleport(possiblePortal.getDestination().toLocation());
+            event.getPlayer().teleport(possiblePortal.getDestination().toLocation(plugin));
         }
     }
 

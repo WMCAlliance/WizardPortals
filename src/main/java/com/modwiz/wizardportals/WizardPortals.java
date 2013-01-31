@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created with IntelliJ IDEA.
- * User: sjohnson
+ * User: sjohnson      -
  * Date: 1/18/13
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
@@ -68,16 +68,37 @@ public class WizardPortals extends JavaPlugin {
                             ChatColor.AQUA + "/wp create <name> - Ends a selection and creates a portal with a destination at your current location.\n" +
                             "/wp delete <name> - Deletes a portal.\n" +
                             "/wp select - Turns on selection mode.\n" +
-                            "/wp list - List the names of all current portals.";
+                            "/wp list - List the names of all current portals.\n" +
+                            "/wp here - Set the destination to your current location\n" +
+                            "/wp world <worldname> - Set the destination to that world.";
                     sender.sendMessage(helpText);
                     return true;
                 } else if (args[0].equalsIgnoreCase("debug")) {
                     for (Portal i : portalManager.getPortals()) {
                         if (i != null) {
-                            sender.sendMessage(ChatColor.DARK_AQUA + i.getInterior().toString());
+                            sender.sendMessage(ChatColor.DARK_AQUA + String.valueOf(i.getInterior().isInsideDebug(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), player.getWorld().getName())));
+
                         }
                     }
                     sender.sendMessage(ChatColor.DARK_GREEN + "Portal list complete.");
+                    return true;
+                } else if (args[0].equalsIgnoreCase("here")) {
+                    Session playerSession = sessionManager.getSession(player);
+
+                    if (playerSession.isSelectingDestination()) {
+                        PortalDestination destination = new PortalDestination(player.getLocation());
+                        PortalRegion region = playerSession.getSelectionRegion();
+
+                        playerSession.setSelectingDestination(false);
+
+
+                        portalManager.addPortal(destination, region, playerSession.getPortalName());
+                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
+                    } else {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry you are not currently setting a portals destination.");
+                    }
+
+                    return true;
                 }
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("create")) {
@@ -85,16 +106,40 @@ public class WizardPortals extends JavaPlugin {
                     PortalRegion region = playerSession.getSelectionRegion();
 
                     if (region != null) {
-                        PortalDestination destination = new PortalDestination(player.getLocation());
-                        portalManager.addPortal(destination, region, args[1]);
+                        playerSession.setSelectingDestination(true);
+                        playerSession.setSelecting(false);
+                        playerSession.setPortalName(args[1]);
+                        sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
+                        sender.sendMessage(ChatColor.AQUA + "Please select destination.");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
                     }
 
-                    sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has been created.");
-                    sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
                     return true;
                 } else if (args[0].equalsIgnoreCase("delete")) {
+                    if (portalManager.getPortal(args[1]) == null) {
+                        sender.sendMessage(ChatColor.AQUA + "Sorry that portal does not exist.");
+                        return true;
+                    }
                     portalManager.removePortal(args[1]);
                     sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has been deleted.");
+                    return true;
+                } else if (args[0].equalsIgnoreCase("world")) {
+                    Session playerSession = sessionManager.getSession(player);
+
+                    if (getServer().getWorld(args[1]) == null) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry the destination world must exist.");
+                        return true;
+                    }
+                    if (playerSession.isSelectingDestination()) {
+                        PortalDestination destination = new PortalDestination(args[1]);
+                        PortalRegion region = playerSession.getSelectionRegion();
+
+                        playerSession.setSelectingDestination(false);
+                        portalManager.addPortal(destination, region, playerSession.getPortalName());
+                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
+                    } else {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry you are not currently setting a portals destination.");
+                    }
                     return true;
                 }
             } else {
