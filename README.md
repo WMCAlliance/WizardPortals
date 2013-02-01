@@ -1,13 +1,9 @@
 WizardPortals
 =============
 
+### Description
+
 A standalone portals plugin.
-### Plugin Developers
-
-* modwizcode
-
-
-If you'd like to join the team, let us know and we'll happily add you.
 
 #### Developer Thanks
 
