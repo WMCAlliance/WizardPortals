@@ -1,5 +1,7 @@
 WizardPortals (Dev Branch)
 =============
+Download builds at ci.wma.im
+
 
 ### Description
 
