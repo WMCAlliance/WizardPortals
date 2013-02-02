@@ -5,3 +5,20 @@ commands:
     wp:
         usage: See "/wp help" for help.
         description: WizardPortals command set
+permissions:
+   wizardportals.*:
+        description: Gives access to all Portal Commands commands
+        children:
+            wizardportals.create: true
+    wizardportals.create:
+        description: Allows you to create a portal
+        default: op
+    wizardportals.remove:
+        description: Allows you to remove a portal
+        default: op 
+     wizardportals.list:
+        description: Allows you to list a portal
+        default: op 
+     wizardportals.use:
+        description: Allows you to use (enter) a portal
+        default: op                     
