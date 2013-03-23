@@ -35,12 +35,12 @@ public class EventsHandler implements Listener {
         playerSession.setStaleLocation(event.getPlayer().getLocation());
 
         if (playerSession.isStale()) {
-            //return;
+            return;
         }
 
         Portal possiblePortal = plugin.getPortalManager().getPortal(event.getPlayer());
 
-        if (possiblePortal != null) {
+        if (possiblePortal != null && (hasPermission(possiblePortal.name,event.getPlayer()))) {
             event.getPlayer().teleport(possiblePortal.getDestination().toLocation(plugin));
         }
     }
@@ -59,5 +59,13 @@ public class EventsHandler implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+    
+    private boolean hasPermission(String portalName, Player player) {
+        boolean all = player.hasPermission("wizardportals.*");
+        boolean specific = player.hasPermission("wizardportals.use." + portalName);
+        boolean specificAll = player.hasPermission("wizardportals.use.*");
+        boolean op = player.isOp();
+        return (all || specific || specificAll || op);
     }
 }

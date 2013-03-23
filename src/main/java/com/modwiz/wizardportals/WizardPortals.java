@@ -54,6 +54,10 @@ public class WizardPortals extends JavaPlugin {
         Player player = (Player) sender;
 
         if (cmd.getName().equalsIgnoreCase("wp")) {
+            if (!sender.hasPermission("wizardportals.*") || !sender.isOp()) {
+                sender.sendMessage(ChatColor.DARK_AQUA + "You don't have permissions for that.");
+                return true;
+            }
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("list")) {
                     for (Portal i : portalManager.getPortals()) {
@@ -110,7 +114,7 @@ public class WizardPortals extends JavaPlugin {
 
                     return true;
                 }
-            } else if (args.length == 2) {
+            } else if (args.length >= 2) {
                 if (args[0].equalsIgnoreCase("create")) {
                     Session playerSession = sessionManager.getSession(player);
                     WorldEditPlugin worldEditPlugin = null;
@@ -120,18 +124,43 @@ public class WizardPortals extends JavaPlugin {
                     
                     if (sel == null) {
                         sender.sendMessage(ChatColor.DARK_AQUA + "You need to select a region for that portal first!");
+                        return true;
+                    }
+                    if (args.length == 2) {
+                        playerSession.setSelectingDestination(true);
+                        playerSession.setSelecting(false);
+                        playerSession.setPortalName(args[1]);
+                        sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
+                        sender.sendMessage(ChatColor.AQUA + "Please select destination.");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
+                    } else if (args.length == 3) {
+                        PortalDestination destination = new PortalDestination(player.getLocation());
+                        
+                        worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
+                        sel = worldEditPlugin.getSelection(player);
+                    
+                    
+                        Vector min = sel.getNativeMinimumPoint();
+                        Vector max = sel.getNativeMaximumPoint();
+                        Location minLoc = new Location(sel.getWorld(), min.getX(), min.getY(), min.getZ());
+                        Location maxLoc = new Location(sel.getWorld(), max.getX(), max.getY(), max.getZ());
+                        PortalRegion region = new PortalRegion(minLoc, maxLoc);
+
+                        Location dest = null;
+                        if (args[2].startsWith("w:") || args[2].startsWith("W:")) {
+                            dest = getServer().getWorld(args[2].substring(2)).getSpawnLocation();
+                        }
+                    
+                        //if (arg)
+                        portalManager.addPortal(new PortalDestination(dest), region, args[1]);
+                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
                     }
 
-                    playerSession.setSelectingDestination(true);
-                    playerSession.setSelecting(false);
-                    playerSession.setPortalName(args[1]);
-                    sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
-                    sender.sendMessage(ChatColor.AQUA + "Please select destination.");
-                    sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
-
-
+                    
                     return true;
-                } else if (args[0].equalsIgnoreCase("delete")) {
+                }
+            } if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("delete")) {
                     if (portalManager.getPortal(args[1]) == null) {
                         sender.sendMessage(ChatColor.AQUA + "Sorry that portal does not exist.");
                         return true;
