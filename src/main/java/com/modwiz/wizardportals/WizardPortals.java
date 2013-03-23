@@ -5,7 +5,12 @@ import com.modwiz.wizardportals.player.Session;
 import com.modwiz.wizardportals.storage.Portal;
 import com.modwiz.wizardportals.storage.PortalDestination;
 import com.modwiz.wizardportals.storage.PortalRegion;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEditPermissionException;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -58,12 +63,7 @@ public class WizardPortals extends JavaPlugin {
                     }
                     sender.sendMessage(ChatColor.DARK_GREEN + "Portal list complete.");
                     return true;
-                } else if (args[0].equalsIgnoreCase("select")) {
-                    Session playerSession = sessionManager.getSession(player);
-                    playerSession.setSelecting(true);
-                    player.sendMessage(ChatColor.AQUA + "Selection mode enabled");
-                    return true;
-                } else if (args[0].equalsIgnoreCase("help")) {
+                }  else if (args[0].equalsIgnoreCase("help")) {
                     String helpText = ChatColor.GREEN + "WizardPortals Help\n" +
                             ChatColor.AQUA + "/wp create <name> - Ends a selection and creates a portal with a destination at your current location.\n" +
                             "/wp delete <name> - Deletes a portal.\n" +
@@ -87,7 +87,17 @@ public class WizardPortals extends JavaPlugin {
 
                     if (playerSession.isSelectingDestination()) {
                         PortalDestination destination = new PortalDestination(player.getLocation());
-                        PortalRegion region = playerSession.getSelectionRegion();
+                        
+                        WorldEditPlugin worldEditPlugin = null;
+                        worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
+                        Selection sel = worldEditPlugin.getSelection(player);
+                    
+                    
+                        Vector min = sel.getNativeMinimumPoint();
+                        Vector max = sel.getNativeMaximumPoint();
+                        Location minLoc = new Location(sel.getWorld(), min.getX(), min.getY(), min.getZ());
+                        Location maxLoc = new Location(sel.getWorld(), max.getX(), max.getY(), max.getZ());
+                        PortalRegion region = new PortalRegion(minLoc, maxLoc);
 
                         playerSession.setSelectingDestination(false);
 
@@ -103,16 +113,22 @@ public class WizardPortals extends JavaPlugin {
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("create")) {
                     Session playerSession = sessionManager.getSession(player);
-                    PortalRegion region = playerSession.getSelectionRegion();
-
-                    if (region != null) {
-                        playerSession.setSelectingDestination(true);
-                        playerSession.setSelecting(false);
-                        playerSession.setPortalName(args[1]);
-                        sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
-                        sender.sendMessage(ChatColor.AQUA + "Please select destination.");
-                        sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
+                    WorldEditPlugin worldEditPlugin = null;
+                    worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
+                    Selection sel = worldEditPlugin.getSelection(player);
+                    
+                    
+                    if (sel == null) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "You need to select a region for that portal first!");
                     }
+
+                    playerSession.setSelectingDestination(true);
+                    playerSession.setSelecting(false);
+                    playerSession.setPortalName(args[1]);
+                    sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
+                    sender.sendMessage(ChatColor.AQUA + "Please select destination.");
+                    sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
+
 
                     return true;
                 } else if (args[0].equalsIgnoreCase("delete")) {
