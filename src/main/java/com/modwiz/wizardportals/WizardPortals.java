@@ -47,151 +47,194 @@ public class WizardPortals extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            return false;
-        }
-
-        Player player = (Player) sender;
-
+        // First check that the command is correct
         if (cmd.getName().equalsIgnoreCase("wp")) {
-            if (!sender.hasPermission("wizardportals.*") || !sender.isOp()) {
-                sender.sendMessage(ChatColor.DARK_AQUA + "You don't have permissions for that.");
-                return true;
-            }
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("list")) {
-                    for (Portal i : portalManager.getPortals()) {
-                        if (i != null) {
-                            sender.sendMessage(ChatColor.DARK_AQUA + i.name);
-                        }
-                    }
-                    sender.sendMessage(ChatColor.DARK_GREEN + "Portal list complete.");
-                    return true;
-                }  else if (args[0].equalsIgnoreCase("help")) {
-                    String helpText = ChatColor.GREEN + "WizardPortals Help\n" +
-                            ChatColor.AQUA + "/wp create <name> - Ends a selection and creates a portal with a destination at your current location.\n" +
-                            "/wp delete <name> - Deletes a portal.\n" +
-                            "/wp select - Turns on selection mode.\n" +
-                            "/wp list - List the names of all current portals.\n" +
-                            "/wp here - Set the destination to your current location\n" +
-                            "/wp world <worldname> - Set the destination to that world.";
-                    sender.sendMessage(helpText);
-                    return true;
-                } else if (args[0].equalsIgnoreCase("debug")) {
-                    for (Portal i : portalManager.getPortals()) {
-                        if (i != null) {
-                            sender.sendMessage(ChatColor.DARK_AQUA + String.valueOf(i.getInterior().isInsideDebug(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), player.getWorld().getName())));
-
-                        }
-                    }
-                    sender.sendMessage(ChatColor.DARK_GREEN + "Portal list complete.");
-                    return true;
-                } else if (args[0].equalsIgnoreCase("here")) {
-                    Session playerSession = sessionManager.getSession(player);
-
-                    if (playerSession.isSelectingDestination()) {
-                        PortalDestination destination = new PortalDestination(player.getLocation());
-                        
-                        WorldEditPlugin worldEditPlugin = null;
-                        worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-                        Selection sel = worldEditPlugin.getSelection(player);
-                    
-                    
-                        Vector min = sel.getNativeMinimumPoint();
-                        Vector max = sel.getNativeMaximumPoint();
-                        Location minLoc = new Location(sel.getWorld(), min.getX(), min.getY(), min.getZ());
-                        Location maxLoc = new Location(sel.getWorld(), max.getX(), max.getY(), max.getZ());
-                        PortalRegion region = new PortalRegion(minLoc, maxLoc);
-
-                        playerSession.setSelectingDestination(false);
-
-
-                        portalManager.addPortal(destination, region, playerSession.getPortalName());
-                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
-                    } else {
-                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry you are not currently setting a portals destination.");
-                    }
-
-                    return true;
-                }
-            } else if (args.length >= 2) {
-                if (args[0].equalsIgnoreCase("create")) {
-                    Session playerSession = sessionManager.getSession(player);
-                    WorldEditPlugin worldEditPlugin = null;
-                    worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-                    Selection sel = worldEditPlugin.getSelection(player);
-                    
-                    
-                    if (sel == null) {
-                        sender.sendMessage(ChatColor.DARK_AQUA + "You need to select a region for that portal first!");
-                        return true;
-                    }
-                    if (args.length == 2) {
-                        playerSession.setSelectingDestination(true);
-                        playerSession.setSelecting(false);
-                        playerSession.setPortalName(args[1]);
-                        sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has almost been created.");
-                        sender.sendMessage(ChatColor.AQUA + "Please select destination.");
-                        sender.sendMessage(ChatColor.DARK_AQUA + "Selection mode disabled.");
-                    } else if (args.length == 3) {
-                        PortalDestination destination = new PortalDestination(player.getLocation());
-                        
-                        worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-                        sel = worldEditPlugin.getSelection(player);
-                    
-                    
-                        Vector min = sel.getNativeMinimumPoint();
-                        Vector max = sel.getNativeMaximumPoint();
-                        Location minLoc = new Location(sel.getWorld(), min.getX(), min.getY(), min.getZ());
-                        Location maxLoc = new Location(sel.getWorld(), max.getX(), max.getY(), max.getZ());
-                        PortalRegion region = new PortalRegion(minLoc, maxLoc);
-
-                        Location dest = null;
-                        if (args[2].startsWith("w:") || args[2].startsWith("W:")) {
-                            dest = getServer().getWorld(args[2].substring(2)).getSpawnLocation();
-                        }
-                    
-                        //if (arg)
-                        portalManager.addPortal(new PortalDestination(dest), region, args[1]);
-                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
-                    }
-
-                    
-                    return true;
-                }
-            } if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("delete")) {
-                    if (portalManager.getPortal(args[1]) == null) {
-                        sender.sendMessage(ChatColor.AQUA + "Sorry that portal does not exist.");
-                        return true;
-                    }
-                    portalManager.removePortal(args[1]);
-                    sender.sendMessage(ChatColor.AQUA + "Portal \"" + args[1] + "\" has been deleted.");
-                    return true;
-                } else if (args[0].equalsIgnoreCase("world")) {
-                    Session playerSession = sessionManager.getSession(player);
-
-                    if (getServer().getWorld(args[1]) == null) {
-                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry the destination world must exist.");
-                        return true;
-                    }
-                    if (playerSession.isSelectingDestination()) {
-                        PortalDestination destination = new PortalDestination(args[1]);
-                        PortalRegion region = playerSession.getSelectionRegion();
-
-                        playerSession.setSelectingDestination(false);
-                        portalManager.addPortal(destination, region, playerSession.getPortalName());
-                        sender.sendMessage(ChatColor.AQUA + "Portal " + playerSession.getPortalName() + " has been created.");
-                    } else {
-                        sender.sendMessage(ChatColor.DARK_AQUA + "Sorry you are not currently setting a portals destination.");
-                    }
-                    return true;
-                }
+            // Now check which command it is
+            if (args.length == 0) {
+                sender.sendMessage(ChatColor.AQUA + "Use /wp help for WizardPortals help.");
             } else {
-                sender.sendMessage(ChatColor.GREEN + "Failure, command does not exist.");
+                // Its a list command.
+                if (args[0].equalsIgnoreCase("list")) {
+                    if (sender.hasPermission("wizardportals.list")) {
+                        // Header "Portals List - X portals loaded"
+                        sender.sendMessage(ChatColor.BLUE + "Portals List - " + ChatColor.DARK_AQUA + portalManager.getPortals().size() + ChatColor.BLUE + " portals loaded.");
+
+                        // Followed by XXXXX - Destination: (x, y, z, worldName)
+                        for (Portal portal : portalManager.getPortals()) {
+                            sender.sendMessage(ChatColor.DARK_AQUA + portal.name + ChatColor.BLUE + " - Destination: " + portal.getDestination().toString());
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You don't have permission to list portals.");
+                    }
+                } else if (args[0].equalsIgnoreCase("create")) {
+                    // Create a new portal
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+
+                        // Check permissions
+                        if (player.hasPermission("wizardportals.create")) {
+                            // Get the players session.
+                            Session session = sessionManager.getSession(player);
+
+                            // Do they have a selection?
+                            if (session.getSelectionRegion() != null) {
+                                // Setup the portal name
+                                String portalName = args[1];
+                                if (portalManager.getPortal(portalName) != null) {
+                                    player.sendMessage(ChatColor.RED + "Try again with a different name. That name is already taken.");
+                                } else {
+                                    session.setPortalName(portalName);
+                                    player.sendMessage(ChatColor.BLUE + "Your portal has been created with your current location as the destination.");
+                                    player.sendMessage(ChatColor.BLUE + "If you wish to select a new destination use /wp dest <newDestination>.");
+
+                                    PortalDestination dest = new PortalDestination(player.getLocation());
+                                    PortalRegion region = session.getSelectionRegion();
+                                    portalManager.addPortal(dest, region, portalName);
+                                }
+                            } else {
+                                player.sendMessage(ChatColor.RED + "You need to select both points with a wooden axe first.");
+                            }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You don't have permission to create a portal.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Only players can create a new portal.");
+                    }
+                } else if (args[0].equalsIgnoreCase("select")) {
+                    // Select a portal to perform operations on.
+                    // Will only be able to work with players.
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        // Do they have permission?
+                        if (player.hasPermission("wizardportals.select")) {
+                            Session session = sessionManager.getSession(player);
+                            session.clearSelection();
+                            // The portal must exist.
+                            if (portalManager.getPortal(args[1]) != null) {
+                                session.setPortalName(args[1]);
+                                player.sendMessage(ChatColor.BLUE + "Portal " + ChatColor.DARK_AQUA + args[1] + " " + ChatColor.BLUE + "selected.");
+                            } else {
+                                player.sendMessage(ChatColor.RED + "Invalid portal name, see /wp list for a list of all portals.");
+                            }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You don't have permission to select a portal.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Sorry only players can select portals.");
+                    }
+                } else if (args[0].equalsIgnoreCase("dest")) {
+                    // Set a destination on a selected portal.
+                    // Must be a player to use this command
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        Session session = sessionManager.getSession(player);
+
+                        // check permission
+                        if (player.hasPermission("wizardportals.dest")) {
+                            if (session.getPortalName() == null) {
+                                player.sendMessage(ChatColor.RED + "You must select a portal with /wp select first.");
+                            } else {
+                                Portal portal = portalManager.getPortal(session.getPortalName());
+                                if (portal == null) {
+                                    player.sendMessage(ChatColor.RED + "Selected portal invalid: Does not exist!");
+                                } else {
+                                    if (args[1].startsWith("w:")) {
+                                        String worldName = args[1].substring(2);
+                                        if (getServer().getWorld(worldName) == null) {
+                                            player.sendMessage(ChatColor.RED + "Destination world does not exist.");
+                                        } else {
+                                            PortalDestination dest = new PortalDestination(worldName);
+                                            portal.setDestination(dest);
+                                            portalManager.setPortal(portal);
+                                            player.sendMessage(ChatColor.BLUE + "Set destination to world " + ChatColor.DARK_AQUA + worldName + ChatColor.BLUE + ".");
+                                        }
+                                    } else if (args[1].equalsIgnoreCase("here")) {
+                                        PortalDestination dest = new PortalDestination(player.getLocation());
+                                        portal.setDestination(dest);
+                                        portalManager.setPortal(portal);
+                                        player.sendMessage(ChatColor.BLUE + "Set destination to your current location.");
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "Invalid destination. Valid destinations are here and w:<worldName>");
+                                    }
+                                }
+                            }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You don't have permission to set the destination of a portal.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You have to be a player to use this command.");
+                    }
+                } else if (args[0].equalsIgnoreCase("delete")) {
+                    // Delete command
+                    if (sender.hasPermission("wizardportals.delete")) {
+                        if (portalManager.getPortal(args[1]) != null) {
+                            portalManager.removePortal(args[1]);
+                            sender.sendMessage(ChatColor.BLUE + "The portal has been deleted.");
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "No portal exists by that name. Use /wp list to view a list of all portals.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You don't have permission to delete a portal.");
+                    }
+                } else if (args[0].equalsIgnoreCase("debug")) {
+                    // Debug mode toggle
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+
+                        if (player.hasPermission("wizardportals.debug")) {
+                            Session session = sessionManager.getSession(player);
+                            session.setDebug(!session.isDebugging());
+
+                            String state = session.isDebugging() ? ChatColor.DARK_AQUA + "on" : ChatColor.RED + "off";
+                            player.sendMessage(ChatColor.BLUE + "Debug mode has been toggled " + state + ChatColor.BLUE + ".");
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You don't have permission to toggle debug mode.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Only players can toggle debug mode.");
+                    }
+                } else if (args[0].equalsIgnoreCase("help")) {
+                    // Help command, only show commands that the sender has permission to use.
+
+                    if (sender.hasPermission("wizardportals.help")) {
+                        sender.sendMessage(ChatColor.BLUE + "/wp help - " + ChatColor.DARK_AQUA + "View commands and their help.");
+
+                        // List portals help
+                        if (sender.hasPermission("wizardportals.list")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp list - " + ChatColor.DARK_AQUA + "List all the portals.");
+                        }
+
+                        // Create portal help
+                        if (sender.hasPermission("wizardportals.create")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp create <portalName> - " + ChatColor.DARK_AQUA + "Create a new portal.");
+                        }
+
+                        // Select portal help
+                        if (sender.hasPermission("wizardportals.select")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp select <portalName> - " + ChatColor.DARK_AQUA + "Select a portal.");
+                        }
+
+                        // Modify destination help
+                        if (sender.hasPermission("wizardportals.dest")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp dest <destination> - " + ChatColor.DARK_AQUA + "Modify destination, destinations are w:<worldname> and here.");
+                        }
+
+                        // Delete portal help
+                        if (sender.hasPermission("wizardportals.delete")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp delete <portalName> - " + ChatColor.DARK_AQUA + "Delete the specified portal.");
+                        }
+
+                        // Debug portal help
+                        if (sender.hasPermission("wizardportals.debug")) {
+                            sender.sendMessage(ChatColor.BLUE + "/wp debug - " + ChatColor.DARK_AQUA + "Toggle debug mode.");
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You don't have permission to view help.");
+                    }
+                }
             }
         }
-        return false;
+        return true;
     }
 
     public PortalManager getPortalManager() {
@@ -200,5 +243,14 @@ public class WizardPortals extends JavaPlugin {
 
     public SessionManager getSessionManager() {
         return sessionManager;
+    }
+
+    /**
+     * Is WorldEdit installed and enabled?
+     *
+     * @return True if WorldEdit is enabled, false otherwise.
+     */
+    public boolean worldEditSelections() {
+        return getServer().getPluginManager().isPluginEnabled("WorldEdit");
     }
 }

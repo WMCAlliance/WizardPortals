@@ -3,6 +3,8 @@ package com.modwiz.wizardportals.handlers;
 import com.modwiz.wizardportals.WizardPortals;
 import com.modwiz.wizardportals.player.Session;
 import com.modwiz.wizardportals.storage.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,7 +43,15 @@ public class EventsHandler implements Listener {
         Portal possiblePortal = plugin.getPortalManager().getPortal(event.getPlayer());
 
         if (possiblePortal != null && (hasPermission(possiblePortal.name,event.getPlayer()))) {
-            event.getPlayer().teleport(possiblePortal.getDestination().toLocation(plugin));
+            if (playerSession.isDebugging()) {
+                Player player = event.getPlayer();
+                player.sendMessage(ChatColor.BLUE + "Portal Name: " + ChatColor.DARK_AQUA + possiblePortal.name);
+                player.sendMessage(ChatColor.BLUE + "Portal Destination: " + ChatColor.DARK_AQUA + possiblePortal.getDestination().toString());
+                player.sendMessage(ChatColor.BLUE + "First Corner: " + ChatColor.DARK_AQUA + possiblePortal.getInterior().leftCorner.toString());
+                player.sendMessage(ChatColor.BLUE + "Second Corner: " + ChatColor.DARK_AQUA + possiblePortal.getInterior().rightCorner.toString());
+            } else {
+                event.getPlayer().teleport(possiblePortal.getDestination().toLocation(plugin));
+            }
         }
     }
 
@@ -50,11 +60,11 @@ public class EventsHandler implements Listener {
         Player player = event.getPlayer();
         Session playerSession = plugin.getSessionManager().getSession(player);
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if(playerSession.setLeftClick(event.getClickedBlock().getLocation())) {
-                event.setCancelled(true);
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOD_AXE) {
+            if (playerSession.setLeftClick(event.getClickedBlock().getLocation())) {
+                    event.setCancelled(true);
             }
-        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() == Material.WOOD_AXE) {
             if (playerSession.setRightClick(event.getClickedBlock().getLocation())) {
                 event.setCancelled(true);
             }

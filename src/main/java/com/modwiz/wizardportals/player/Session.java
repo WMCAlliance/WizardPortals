@@ -27,6 +27,8 @@ public class Session {
     private Location leftClick = null;
     private Location rightClick = null;
     private String portalName = null;
+    private PortalRegion selection = null;
+    private boolean isDebug = false;
 
     public Session(WizardPortals plugin, Player player) {
         this.plugin = plugin;
@@ -52,41 +54,38 @@ public class Session {
     }
 
     public boolean setLeftClick(Location location) {
-        if (!this.isSelecting) {
-            return false;
-        }
-
         Vector pos = location.toVector();
 
         String world = location.getWorld().getName();
 
         this.leftClick = pos.toLocation(this.getWorldFromName(world));
 
-        this.getPlayerFromName().sendMessage(ChatColor.AQUA + "Primary Point set to: (" + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + ")");
-        return true;
+        // Store but don't alert player, worldedit will do that.
+        if (!plugin.worldEditSelections()) {
+            this.getPlayerFromName().sendMessage(ChatColor.AQUA + "Primary Point set to: (" + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + ")");
+            return true;
+        }
+
+        return false;
     }
 
     public boolean setRightClick(Location location) {
-        if (!this.isSelecting) {
-            return false;
-        }
-
         Vector pos = location.toVector();
 
         String world = location.getWorld().getName();
 
         this.rightClick = pos.toLocation(getWorldFromName(world));
 
-        this.getPlayerFromName().sendMessage(ChatColor.LIGHT_PURPLE + "Secondary Point set to: (" + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + ")");
-        return true;
+        // Store but don't alert player, worldedit will do that.
+        if (!plugin.worldEditSelections()) {
+            this.getPlayerFromName().sendMessage(ChatColor.LIGHT_PURPLE + "Secondary Point set to: (" + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + ")");
+            return true;
+        }
+
+        return false;
     }
 
     public PortalRegion getSelectionRegion() {
-        if (isSelecting == false && isSelectingDestination == false) {
-            this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You are not currently selecting a portal region.");
-            return null;
-        }
-
         if (leftClick == null) {
             this.getPlayerFromName().sendMessage(ChatColor.DARK_AQUA + "You need to LEFT click on a block.");
             return null;
@@ -126,8 +125,43 @@ public class Session {
     public String getPortalName() {
         return portalName;
     }
+    /*
+
+    public PortalRegion getSelection() {
+        return this.selection;
+    }
+
+    public void setSelection(PortalRegion region) {
+        this.selection = region;
+    }
+    */
 
     public void setPortalName(String portalName) {
         this.portalName = portalName;
+    }
+
+    public boolean isPortalSelected() {
+        if (this.portalName != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean portalCreationPending() {
+        return leftClick != null && rightClick != null && portalName != null;
+    }
+
+    public void clearSelection() {
+        this.portalName = null;
+        this.leftClick = null;
+        this.rightClick = null;
+    }
+
+    public void setDebug(boolean debug) {
+        this.isDebug = debug;
+    }
+
+    public boolean isDebugging() {
+        return this.isDebug;
     }
 }

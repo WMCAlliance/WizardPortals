@@ -85,6 +85,12 @@ public class DiskPortalStore extends PortalStore{
     }
 
     @Override
+    public void setPortal(Portal portal) {
+        memoryCache.setPortal(portal);
+        save();
+    }
+
+    @Override
     public void deletePortal(String portalName) {
         memoryCache.deletePortal(portalName);
 

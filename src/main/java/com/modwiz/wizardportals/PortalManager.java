@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,6 +52,10 @@ public class PortalManager {
         return portalStore.getPortal(portalName);
     }
 
+    public void setPortal(Portal portal) {
+        portalStore.setPortal(portal);
+    }
+
     public Portal getPortal(Player player) {
         Location playerLocation = player.getLocation();
 
@@ -62,6 +67,6 @@ public class PortalManager {
     }
 
     public Collection<Portal> getPortals() {
-        return portalStore.getPortals().values();
+        return Collections.unmodifiableCollection(portalStore.getPortals().values());
     }
 }

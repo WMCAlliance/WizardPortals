@@ -1,8 +1,24 @@
 name: WizardPortals
 main: com.modwiz.wizardportals.WizardPortals
-version: 1.0.0
-depends: [WorldEdit]
+version: 2.0.1
+softdepend: [WorldEdit]
 commands:
     wp:
         usage: See "/wp help" for help.
         description: WizardPortals command set
+        aliases: [wizardportals, wizardportal, portal]
+permissions:
+    wizardportals.*:
+        description: All the permissions for wizard portals
+        children:
+            wizardportals.list: true
+            wizardportals.create: true
+            wizardportals.select: true
+            wizardportals.delete: true
+            wizardportals.dest: true
+            wizardportals.debug: true
+            wizardportals.help: true
+        default: op
+    wizardportals.help:
+        description: Use /wp help
+        default: true

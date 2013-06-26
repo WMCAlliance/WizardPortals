@@ -39,4 +39,7 @@ public class Portal implements Serializable {
         return destination;
     }
 
+    public void setDestination(PortalDestination dest) {
+        destination = dest;
+    }
 }

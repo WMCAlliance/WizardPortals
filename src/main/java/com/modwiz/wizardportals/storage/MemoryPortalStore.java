@@ -64,6 +64,11 @@ public class MemoryPortalStore extends PortalStore implements Serializable {
     }
 
     @Override
+    public void setPortal(Portal portal) {
+        storedPortals.put(portal.name, portal);
+    }
+
+    @Override
     public void deletePortal(String portalName) {
         storedPortals.remove(portalName);
     }

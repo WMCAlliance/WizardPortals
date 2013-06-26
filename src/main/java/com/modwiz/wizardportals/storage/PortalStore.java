@@ -24,6 +24,9 @@ public abstract class PortalStore {
     // Adds a new portal only using location objects
     public abstract void addPortal(PortalDestination destination, PortalRegion region, String portalName);
 
+    // Set an existing portal
+    public abstract void setPortal(Portal portal);
+
     public abstract void deletePortal(String portalName);
 
     public abstract Map<String, Portal> getPortals();
