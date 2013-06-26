@@ -62,6 +62,9 @@ public class PortalDestination implements Serializable {
         isWorldDest = true;
     }
 
-
+    @Override
+    public String toString() {
+        return String.format("(%s,%s,%s,%s)", x, y, z, world);
+    }
 
 }

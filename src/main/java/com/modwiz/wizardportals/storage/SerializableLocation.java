@@ -44,9 +44,6 @@ public class SerializableLocation implements Serializable {
     }
 
     public String toString() {
-        return "X: " + x + "\n" +
-                "Y: " + y + "\n" +
-                "Z: " + z + "\n" +
-                "World: " + worldname;
+        return String.format("(%s,%s,%s,%s)", x, y, z, worldname);
     }
 }
