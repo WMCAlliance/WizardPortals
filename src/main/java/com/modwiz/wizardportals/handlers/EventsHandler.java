@@ -3,6 +3,7 @@ package com.modwiz.wizardportals.handlers;
 import com.modwiz.wizardportals.WizardPortals;
 import com.modwiz.wizardportals.player.Session;
 import com.modwiz.wizardportals.storage.*;
+import com.sk89q.worldedit.WorldEdit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,11 +61,17 @@ public class EventsHandler implements Listener {
         Player player = event.getPlayer();
         Session playerSession = plugin.getSessionManager().getSession(player);
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOD_AXE) {
+        Material selectionWand = Material.WOOD_AXE;
+        if (plugin.worldEditSelections()) {
+            WorldEdit worldEdit = WorldEdit.getInstance();
+            selectionWand = Material.getMaterial(worldEdit.getConfiguration().wandItem);
+        }
+
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == selectionWand) {
             if (playerSession.setLeftClick(event.getClickedBlock().getLocation())) {
                     event.setCancelled(true);
             }
-        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOD_AXE) {
+        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == selectionWand) {
             if (playerSession.setRightClick(event.getClickedBlock().getLocation())) {
                 event.setCancelled(true);
             }
