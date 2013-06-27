@@ -64,7 +64,7 @@ public class EventsHandler implements Listener {
             if (playerSession.setLeftClick(event.getClickedBlock().getLocation())) {
                     event.setCancelled(true);
             }
-        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() == Material.WOOD_AXE) {
+        }  else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOD_AXE) {
             if (playerSession.setRightClick(event.getClickedBlock().getLocation())) {
                 event.setCancelled(true);
             }
