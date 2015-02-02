@@ -3,11 +3,7 @@ WizardPortals
 
 ### Description
 
-A standalone portals plugin.
-
-#### Developer Thanks
-
-
+A standalone portals plugin that can use the WorldEdit wand for selections.
 
 ### Extra Notes
 
@@ -15,5 +11,5 @@ This development is mainly for the benifit of the [Worldwide Minecraft Alliance]
 
 ### Required for Compiling
 
-Nothing 100% Standalone
- 
+Install Maven 3
+Check out this repo and run: mvn clean install
