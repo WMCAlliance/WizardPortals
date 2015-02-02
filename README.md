@@ -12,4 +12,5 @@ This development is mainly for the benifit of the [Worldwide Minecraft Alliance]
 ### Required for Compiling
 
 Install Maven 3
+
 Check out this repo and run: mvn clean install
