@@ -12,7 +12,11 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class PortalRegion implements Serializable {
-    public SerializableLocation leftCorner;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7805784408806526330L;
+	public SerializableLocation leftCorner;
     public SerializableLocation rightCorner;
 
     public PortalRegion() {

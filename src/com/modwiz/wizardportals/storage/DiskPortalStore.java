@@ -2,9 +2,6 @@ package com.modwiz.wizardportals.storage;
 
 import com.modwiz.wizardportals.WizardPortals;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.*;
 import java.util.Map;
 

@@ -1,6 +1,5 @@
 package com.modwiz.wizardportals.storage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -15,7 +14,11 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class PortalDestination implements Serializable {
-    String world;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 74930298235575477L;
+	String world;
     double x;
     double y;
     double z;

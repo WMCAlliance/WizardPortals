@@ -1,7 +1,6 @@
 package com.modwiz.wizardportals.player;
 
 import com.modwiz.wizardportals.WizardPortals;
-import com.modwiz.wizardportals.storage.PortalDestination;
 import com.modwiz.wizardportals.storage.PortalRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

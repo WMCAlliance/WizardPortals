@@ -1,9 +1,6 @@
 package com.modwiz.wizardportals.storage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +11,11 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class SerializableLocation implements Serializable {
-    private int x,y,z;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6663244398764393246L;
+	private int x,y,z;
     private float pitch, yaw;
     private String worldname;
 

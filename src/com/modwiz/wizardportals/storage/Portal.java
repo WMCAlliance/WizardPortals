@@ -1,10 +1,6 @@
 package com.modwiz.wizardportals.storage;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +10,12 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class Portal implements Serializable {
-    // Name of the portal
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9158310672125284985L;
+
+	// Name of the portal
     public String name;
 
     // World name

@@ -16,7 +16,11 @@ import java.util.Map;
  * production server
  */
 public class MemoryPortalStore extends PortalStore implements Serializable {
-    private Map<String, Portal> storedPortals;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9099015299547918701L;
+	private Map<String, Portal> storedPortals;
 
     public MemoryPortalStore() {
         storedPortals = new HashMap<String, Portal>();
