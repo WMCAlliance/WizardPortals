@@ -57,10 +57,10 @@ public class EventsHandler implements Listener {
         Player player = event.getPlayer();
         Session playerSession = plugin.getSessionManager().getSession(player);
 
-        Material selectionWand = Material.WOOD_AXE;
+        Material selectionWand = Material.WOODEN_AXE;
         if (plugin.worldEditSelections()) {
             WorldEdit worldEdit = WorldEdit.getInstance();
-            selectionWand = Material.getMaterial(worldEdit.getConfiguration().wandItem);
+            selectionWand = Material.getMaterial(String.valueOf(worldEdit.getConfiguration().wandItem)); // This probably wont work
         }
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == selectionWand) {
