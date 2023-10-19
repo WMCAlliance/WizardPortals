@@ -2,7 +2,7 @@ name: WizardPortals
 main: com.modwiz.wizardportals.WizardPortals
 version: 2.0.2
 softdepend: [WorldEdit]
-api-version: 1.16
+api-version: 1.19
 commands:
     wp:
         usage: See "/wp help" for help.
