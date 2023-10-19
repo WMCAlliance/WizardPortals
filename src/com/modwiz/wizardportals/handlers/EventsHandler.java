@@ -60,7 +60,7 @@ public class EventsHandler implements Listener {
         Material selectionWand = Material.WOODEN_AXE;
         if (plugin.worldEditSelections()) {
             WorldEdit worldEdit = WorldEdit.getInstance();
-            selectionWand = Material.getMaterial(String.valueOf(worldEdit.getConfiguration().wandItem)); // This probably wont work
+			selectionWand = Material.matchMaterial(worldEdit.getConfiguration().wandItem);
         }
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == selectionWand) {
