@@ -1,6 +1,6 @@
 name: WizardPortals
 main: com.modwiz.wizardportals.WizardPortals
-version: 2.0.2
+version: 2.1.0
 softdepend: [WorldEdit]
 api-version: 1.19
 commands:
