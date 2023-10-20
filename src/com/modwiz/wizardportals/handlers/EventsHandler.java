@@ -5,6 +5,7 @@ import com.modwiz.wizardportals.player.Session;
 import com.modwiz.wizardportals.storage.*;
 import com.sk89q.worldedit.WorldEdit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,17 +38,22 @@ public class EventsHandler implements Listener {
             return;
         }
 
-        Portal possiblePortal = plugin.getPortalManager().getPortal(event.getPlayer());
+        Player player = event.getPlayer();
+        Portal possiblePortal = plugin.getPortalManager().getPortal(player);
 
-        if (possiblePortal != null && (hasPermission(possiblePortal.name,event.getPlayer()))) {
+        if (possiblePortal != null && (hasPermission(possiblePortal.name,player))) {
             if (playerSession.isDebugging()) {
-                Player player = event.getPlayer();
                 player.sendMessage(ChatColor.BLUE + "Portal Name: " + ChatColor.DARK_AQUA + possiblePortal.name);
                 player.sendMessage(ChatColor.BLUE + "Portal Destination: " + ChatColor.DARK_AQUA + possiblePortal.getDestination().toString());
                 player.sendMessage(ChatColor.BLUE + "First Corner: " + ChatColor.DARK_AQUA + possiblePortal.getInterior().leftCorner.toString());
                 player.sendMessage(ChatColor.BLUE + "Second Corner: " + ChatColor.DARK_AQUA + possiblePortal.getInterior().rightCorner.toString());
             } else {
-                event.getPlayer().teleport(possiblePortal.getDestination().toLocation(plugin));
+				Location destination = possiblePortal.getDestination().toLocation(plugin);
+				if (destination.isWorldLoaded()) {
+					player.teleport(destination);
+				} else {
+					player.sendMessage(ChatColor.RED + "The world you are trying to Portal to is currently unavailable.");
+				}
             }
         }
     }
